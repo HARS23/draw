@@ -1,0 +1,181 @@
+<!DOCTYPE html> 
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>mate jus draw it</title>
+  <meta content="Harshatwo" property="og:title">
+  <meta content="Draw it" property="og:description">
+  <meta content="https://harshavarthan.api.stdlib.com/draw@dev/hello.html" property="og:url">
+  <meta content="https://media.discordapp.net/attachments/841319146683891775/898068386657996860/image-removebg-preview.png" property="og:image">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <link href="https://media.discordapp.net/attachments/841319146683891775/898068386657996860/image-removebg-preview.png" rel="icon">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Gloria+Hallelujah" />
+      <meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Mate jus draw it" />
+<meta name="twitter:description" content="A cool website to show your creativity" />
+<meta name="twitter:image" content="https://media.discordapp.net/attachments/841319146683891775/898068386657996860/image-removebg-preview.png" />
+  <style type="text/css">
+    body {
+      margin: 0; padding: 0;
+      background-color: yellow;
+    }
+    #content {
+      width: 800px;
+      height: 500px;
+      margin: 0 auto;
+      margin-top: 50px;
+      border: 1px solid black;
+      background-color: white;
+    }
+    #title {
+      width: 800px;
+      margin: 0 auto;
+      text-align: center;
+      margin-top: 30px;
+    }
+    h {
+    font-family: 'Gloria Hallelujah';
+    font-size: 60px;
+    }
+    .controls {
+  margin: 20px 0 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  }
+ .author {
+  background: #fff;
+  min-height: 80px;
+  width: 500px;
+  box-shadow: 0 3px 4px rgba(0,0,0,0.1);
+  border: solid #ddd;
+  border-radius: 25px;
+  display: flex;
+  align-items: flex-start;
+  padding: 1rem 1rem .5rem;
+  margin-left: 60px;
+  font-family: 'Gloria Hallelujah';
+}
+
+h4.user__name {
+  margin-top: 0;
+  margin-bottom: .5rem;
+  text-transform: capitalize;
+  font-family: 'Gloria Hallelujah';
+}
+
+.user__comment {
+  margin-top: 0;
+  margin-bottom: 0;
+  color: #616161;
+}
+
+.user__comment p {
+  margin: 0;
+  font-family: 'Gloria Hallelujah';
+}
+
+img.user-avatar {
+  min-width: 50px;
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  background: #ddd;
+  margin-right: 1rem;
+}
+  </style>
+</head>
+<body>
+ <div id="title"><h>Mate jus draw it</h></div>
+ <div id="content">
+   <canvas id="baka"></canvas>
+  <input type="button" id="clear" value="Clear" style="font-family: 'Gloria Hallelujah'; font-color: black; background-color:yellow">
+  <input type="button" id="download" value="Download" style="font-family: 'Gloria Hallelujah'; font-color: black; background-color:yellow">
+
+   <div class="controls">
+    <div>
+      <input class="color" type="color" name="color" value="#000000"></input>
+    </div>
+    <div>
+      <input class="line-width" type="range" name="width" min="1" max="50" value="10"></input>
+    </div>
+    </div>
+ </div>
+ <script type="text/javascript">
+   var canvas = document.getElementById("baka");
+   var ctx = canvas.getContext("2d");
+    var painting = document.getElementById("content");
+    var paintStyle = getComputedStyle(painting);
+    canvas.width = parseInt(paintStyle.getPropertyValue("width"));
+    canvas.height = parseInt(paintStyle.getPropertyValue("height"));
+
+    const colorInput = document.querySelector(".color");
+    const widthInput = document.querySelector(".line-width");
+    
+    ctx.fillStyle = 'white' ;
+    ctx.fillRect(0, 0,  canvas.width, canvas.height);
+
+    var mouse = {x: 0, y: 0};
+
+    canvas.addEventListener('mousemove', function(e) {
+      mouse.x = e.pageX - this.offsetLeft;
+      mouse.y = e.pageY - this.offsetTop;
+    },false);
+
+    ctx.lineWidth = 3;
+    ctx.lineJoin ='round';
+    ctx.strokeStyle ='#000000';
+
+    canvas.addEventListener('mousedown', function(e) {
+      ctx.beginPath();
+      ctx.moveTo(mouse.x,mouse.y);
+      canvas.addEventListener('mousemove', onPaint, false);
+    },false);
+
+    canvas.addEventListener('mouseup', function(){
+      canvas.removeEventListener('mousemove', onPaint, false);
+    },false);
+
+    var onPaint = function() {
+      ctx.lineTo(mouse.x, mouse.y);
+      ctx.stroke();
+    };
+    
+     document.getElementById('clear').addEventListener('click', function() {
+    var canvas= document.getElementById('baka');
+     var ctx = canvas.getContext('2d');
+   ctx.clearRect(0, 0,  canvas.width, canvas.height);
+  ctx.fillStyle = 'white' ;
+  ctx.fillRect(0, 0,  canvas.width, canvas.height);
+});
+    function colorUpdate(){
+  ctx.strokeStyle = this.value;
+}
+
+function widthUpdate(){
+  ctx.lineWidth = this.value;
+}
+
+colorInput.addEventListener('change', colorUpdate);
+widthInput.addEventListener('change', widthUpdate);
+
+
+document.getElementById('download').addEventListener('click', () => {
+    let canvasImage = document.getElementById('baka').toDataURL('image/jpeg');
+    let xhr = new XMLHttpRequest();
+    xhr.responseType = 'blob';
+    xhr.onload = function () {
+        let a = document.createElement('a');
+        a.href = window.URL.createObjectURL(xhr.response);
+        a.download = 'harshatwo_name.jpeg';
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      };
+      xhr.open('GET', canvasImage); // This is to download the canvas Image
+      xhr.send();
+})
+ </script>
+</body>
+</html>
